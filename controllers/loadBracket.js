@@ -1,16 +1,18 @@
-const handleLoadBracket = (req, res, db) => {
+const handleLoadBracket = (req, res, dynamoDB) => {
   const { passcode } = req.body;
   if (!passcode) {
     return res.status(400).json("passcode not found");
   }
-  db.select("passcode")
+  dynamoDB
+    .select("passcode")
     .from("bracketCredentials")
     .where("passcode", "=", passcode)
     .then((data) => {
       const isValid = passcode;
       console.log(isValid);
       if (isValid) {
-        db.select("*")
+        dynamoDB
+          .select("*")
           .from("bracketPlayers")
           .where("passcode", "=", passcode)
           .then((user) => {

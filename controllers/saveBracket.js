@@ -1,17 +1,19 @@
-const handleSaveBracket = (req, res, db, bcrypt) => {
+const handleSaveBracket = (req, res, dynamoDB, bcrypt) => {
   const { email, password, passcode } = req.body;
   if (!email || !password || !passcode) {
     return res.status(400).json("Incorrect bracket credentials");
   }
 
-  db.select("email", "hash", "passcode")
+  dynamoDB
+    .select("email", "hash", "passcode")
     .from("bracketCredentials")
     .where("passcode", "=", passcode && "hash", "=", hash)
     .then((data) => {
       const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
       console.log(isValid);
       if (isValid) {
-        db.select("*")
+        dynamoDB
+          .select("*")
           .from("bracketPlayers")
           .where("passcode", "=", passcode)
           .then((user) => {
