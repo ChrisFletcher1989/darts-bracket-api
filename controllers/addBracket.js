@@ -16,11 +16,11 @@ const handleAddBracket = (req, res, db, bcrypt) => {
       })
       .into("bracketCredentials")
       .returning("passcode")
-      .then((loginEmail) => {
+      .then((email) => {
         return trx("bracketPlayers")
           .returning("*")
           .insert({
-            email: loginEmail[0].email,
+            email: email,
             passcode: passcode,
             created: new Date(),
             firstPlayers: firstPlayers,
@@ -42,7 +42,7 @@ const handleAddBracket = (req, res, db, bcrypt) => {
       })
       .then(trx.commit)
       .catch(trx.rollback);
-  }).catch((err) => res.status(400).json("unable to register"));
+  }).catch((err) => res.status(400).json("error saving the bracket"));
 };
 
 module.exports = {
