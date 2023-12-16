@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const knex = require("knex");
 
-//EDIT TO LAMBDA/AWS SQL Connect to database (bellow is with knex and needs editing)
+//EDIT TO LAMBDA/AWS SQL Connect to database (below is with knex and needs editing)
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 // const db = knex({
 //   client: "pg",
