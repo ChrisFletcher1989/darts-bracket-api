@@ -27,7 +27,7 @@ app.post("/addBracket", (req, res) => {
   addBracket.handleAddBracket(req, res, db, bcrypt);
 });
 app.post("/loadBracket", (req, res) => {
-  loadBracket.handleLoadBracket(req, res, db, bcrypt);
+  loadBracket.handleLoadBracket(req, res, db);
 });
 
 //Listen for changes
