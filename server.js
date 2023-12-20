@@ -4,7 +4,7 @@ const knex = require("knex");
 const AWS = require("aws-sdk");
 
 AWS.config.update({
-  region: "us-east-1",
+  region: "ap-northeast-1",
 });
 const params = {
   TableName: "bracketCredentials",
