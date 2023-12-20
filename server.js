@@ -2,6 +2,10 @@ const express = require("express");
 const cors = require("cors");
 const knex = require("knex");
 const AWS = require("aws-sdk");
+const bcrypt = require("bcrypt");
+const { handleSaveBracket } = require("./controllers/saveBracket");
+const { handleAddBracket } = require("./controllers/addBracket");
+const { handleLoadBracket } = require("./controllers/loadBracket");
 
 AWS.config.update({
   region: "ap-northeast-1",
@@ -46,13 +50,13 @@ app.get("/", (req, res) => {
 
 //Components
 app.post("/saveBracket", (req, res) => {
-  saveBracket.handleSaveBracket(req, res, dynamoDB, bcrypt);
+  handleSaveBracket(req, res, dynamoDB, bcrypt);
 });
 app.post("/addBracket", (req, res) => {
-  addBracket.handleAddBracket(req, res, dynamoDB, bcrypt);
+  handleAddBracket(req, res, dynamoDB, bcrypt);
 });
 app.post("/loadBracket", (req, res) => {
-  loadBracket.handleLoadBracket(req, res, dynamoDB);
+  handleLoadBracket(req, res, dynamoDB);
 });
 
 //Listen for changes
