@@ -4,15 +4,15 @@ const handleLoadBracket = (req, res, dynamoDB) => {
     return res.status(400).json("Passcode not found");
   }
 
-  const params = {
-    TableName: "bracketPlayers",
+  const credentialParams = {
+    TableName: "bracketCredentials",
     KeyConditionExpression: "id = :id",
     ExpressionAttributeValues: {
       ":id": id,
     },
   };
 
-  dynamoDB.query(params, (err, data) => {
+  dynamoDB.query(credentialParams, (err, data) => {
     if (err) {
       console.error("Error querying bracketCredentials:", err);
       return res.status(500).json("Internal Server Error");
@@ -21,29 +21,37 @@ const handleLoadBracket = (req, res, dynamoDB) => {
     const isValid = data.Items.length > 0;
 
     if (isValid) {
-      const userId = data.Items[0].id;
-      const playersParams = {
-        TableName: "bracketPlayers",
-        KeyConditionExpression: "id = :id",
-        ExpressionAttributeValues: {
-          ":id": userId,
-        },
-      };
+      const storedPasscode = data.Items[0].passcode;
 
-      dynamoDB.query(playersParams, (err, userData) => {
-        if (err) {
-          console.error("Error querying bracketPlayers:", err);
-          return res.status(500).json("Internal Server Error");
-        }
+      if (passcode === storedPasscode) {
+        const userId = data.Items[0].id;
+        const playersParams = {
+          TableName: "bracketPlayers",
+          KeyConditionExpression: "id = :id",
+          ExpressionAttributeValues: {
+            ":id": userId,
+          },
+        };
 
-        if (userData.Items.length > 0) {
-          res.json(userData.Items[0]);
-        } else {
-          res.status(400).json("User not found");
-        }
-      });
+        dynamoDB.query(playersParams, (err, userData) => {
+          if (err) {
+            console.error("Error querying bracketPlayers:", err);
+            return res.status(500).json("Internal Server Error");
+          }
+
+          if (userData.Items.length > 0) {
+            // Omitting the hash from the response
+            const { hash, ...userDataWithoutHash } = userData.Items[0];
+            res.json(userDataWithoutHash);
+          } else {
+            res.status(400).json("User not found");
+          }
+        });
+      } else {
+        res.status(400).json("Incorrect passcode");
+      }
     } else {
-      res.status(400).json("Incorrect passcode");
+      res.status(400).json("User not found");
     }
   });
 };
